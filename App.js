@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import axios from "axios";
-
-const getPopularMovies = async () => {
-  const resp = await axios.get("https://api.themoviedb.org/3/movie/popular?api_key=caf3722c95f7ef6a3aa4080593af8e0e&language=en-US&page=1");
-  return resp.data.results;
-}
-
+import { getPopularMovies } from "./src/services/services"
 const App = () => {
   const [movie, setmovie] = useState("");
-  console.log("datos", movie)
-  getPopularMovies().then(movies => {
-    setmovie(movies[0]);
-  });
+  const [error, seterror] = useState(false);
+
+  useEffect(() => {
+    getPopularMovies().then(movies => {
+      setmovie(movies[0]);
+    }).catch(err => {
+      seterror(err);
+    });
+  }, [])
+
   return (
     <View style={{
       flex: 1,
@@ -22,10 +22,15 @@ const App = () => {
       <Text>Nombre de la pelicula:{movie.original_title}</Text>
       <Text>Idioma:{movie.original_language}</Text>
       <Text>Año de la pelicula:{movie.release_date}</Text>
+      {error && <Text style={styles.error}>Error en el servidor</Text>}
     </View>
   )
 }
 
 export default App
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  error: {
+    color: "red",
+  }
+})
