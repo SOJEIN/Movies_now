@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native'
-import { getPopularMovies, getUpcomingMovies } from "../services/services"
+import { StyleSheet, View, Dimensions, ScrollView } from 'react-native'
+import { getPopularMovies, getUpcomingMovies, getPopularTv } from "../services/services"
 import { SliderBox } from "react-native-image-slider-box";
+import List from '../components/List';
 
 const dimensions = Dimensions.get('screen');
 const Home = () => {
     const [movieImagenes, setMovieImagenes] = useState("");
+    const [popularMovies, setPopularMovies] = useState("");
+    const [popularTv, setPopularTv] = useState("");
     const [error, seterror] = useState(false);
 
     useEffect(() => {
@@ -21,37 +24,61 @@ const Home = () => {
             });
         getPopularMovies()
             .then(movies => {
+                setPopularMovies(movies)
+            }).catch(err => {
+                seterror(err);
+            });
+        getPopularTv()
+            .then(movies => {
+                setPopularTv(movies)
             }).catch(err => {
                 seterror(err);
             });
     }, [])
     return (
-        <View style={styles.sliderContainer}>
-            <SliderBox
-                images={movieImagenes}
-                autoplay={true}
-                circleLoop={true}
-                sliderBoxHeight={dimensions.height / 1.5}
-                dotStyle={styles.slider} />
-        </View>
+        <>
+            <ScrollView>
+                <View style={styles.sliderContainer}>
+                    <SliderBox
+                        images={movieImagenes}
+                        autoplay={true}
+                        circleLoop={true}
+                        sliderBoxHeight={dimensions.height / 1.5}
+                        dotStyle={styles.slider} />
+                </View>
+                <View style={styles.carousel}>
+                    <List
+                        title={"Peliculas populares"}
+                        content={popularMovies}
+                    />
+                </View>
+                <View style={styles.carousel}>
+                    <List
+                        title={"Series populares tv"}
+                        content={popularTv}
+                    />
+                </View>
+            </ScrollView>
+        </>
     )
 }
 
 export default Home
 
 const styles = StyleSheet.create({
-    error: {
-        color: "red",
-    },
-
     sliderContainer: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 20
     },
 
     slider: {
         height: 0
+    },
+
+    carousel: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     }
 })
