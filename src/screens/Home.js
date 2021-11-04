@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Dimensions, ScrollView } from 'react-native'
+import { StyleSheet, View, Dimensions, ScrollView, ActivityIndicator } from 'react-native'
 import { getPopularMovies, getUpcomingMovies, getPopularTv, getFamilyMovies, getDocumentaryMovies } from "../services/services"
 import { SliderBox } from "react-native-image-slider-box";
 import List from '../components/List';
+import Error from '../components/Error';
 
 const dimensions = Dimensions.get('screen');
 const Home = () => {
-    const [movieImagenes, setMovieImagenes] = useState("");
-    const [popularMovies, setPopularMovies] = useState("");
-    const [popularTv, setPopularTv] = useState("");
-    const [familyMovies, setFamilyMovies] = useState("");
-    const [documentaryMovies, setDocumentaryMovies] = useState("");
+    const [movieImagenes, setMovieImagenes] = useState();
+    const [popularMovies, setPopularMovies] = useState();
+    const [popularTv, setPopularTv] = useState();
+    const [familyMovies, setFamilyMovies] = useState();
+    const [documentaryMovies, setDocumentaryMovies] = useState();
     const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
     const getData = () => {
         return Promise.all([
             getUpcomingMovies(),
@@ -38,48 +40,72 @@ const Home = () => {
             setPopularMovies(popularMoviesData);
             setPopularTv(popularTvData);
             setFamilyMovies(familyMoviesData);
-            setDocumentaryMovies(documentaryMoviesData)
-
-        }).catch(err => {
-            setError(err);
-        });
+            setDocumentaryMovies(documentaryMoviesData);
+        }).catch(() => {
+            setError(true);
+        }).finally(() => {
+            setLoading(true);
+        })
     }, [])
     return (
         <>
-            <ScrollView>
-                <View style={styles.sliderContainer}>
-                    <SliderBox
-                        images={movieImagenes}
-                        autoplay={true}
-                        circleLoop={true}
-                        sliderBoxHeight={dimensions.height / 1.5}
-                        dotStyle={styles.slider} />
-                </View>
-                <View style={styles.carousel}>
-                    <List
-                        title={"Peliculas populares"}
-                        content={popularMovies}
-                    />
-                </View>
-                <View style={styles.carousel}>
-                    <List
-                        title={"Series populares tv"}
-                        content={popularTv}
-                    />
-                </View>
-                <View style={styles.carousel}>
-                    <List
-                        title={"Series Familiares"}
-                        content={familyMovies}
-                    />
-                </View>
-                <View style={styles.carousel}>
-                    <List
-                        title={"Documentales"}
-                        content={documentaryMovies}
-                    />
-                </View>
-            </ScrollView>
+            {loading && (
+                <ScrollView>
+                    {
+                        movieImagenes && (
+                            <View style={styles.sliderContainer}>
+                                <SliderBox
+                                    images={movieImagenes}
+                                    autoplay={true}
+                                    circleLoop={true}
+                                    sliderBoxHeight={dimensions.height / 1.5}
+                                    dotStyle={styles.slider} />
+                            </View>
+                        )}
+                    {
+                        popularMovies && (
+                            <View style={styles.carousel}>
+                                <List
+                                    title={"Peliculas populares"}
+                                    content={popularMovies}
+                                />
+                            </View>
+                        )
+                    }
+                    {
+                        popularMovies && (
+                            <View style={styles.carousel}>
+                                <List
+                                    title={"Series populares tv"}
+                                    content={popularTv}
+                                />
+                            </View>
+                        )
+                    }
+                    {
+                        familyMovies && (
+                            <View style={styles.carousel}>
+                                <List
+                                    title={"Series Familiares"}
+                                    content={familyMovies}
+                                />
+                            </View>
+                        )
+                    }
+                    {
+                        documentaryMovies && (
+                            <View style={styles.carousel}>
+                                <List
+                                    title={"Documentales"}
+                                    content={documentaryMovies}
+                                />
+                            </View>
+                        )
+                    }
+                </ScrollView>
+            )}
+            {!loading && <ActivityIndicator size="large" />}
+            {error && <Error />}
         </>
     )
 }
@@ -94,12 +120,12 @@ const styles = StyleSheet.create({
     },
 
     slider: {
-        height: 0
+        height: 0,
     },
 
     carousel: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-    }
+    },
 })
