@@ -6,7 +6,7 @@ import List from '../components/List';
 import Error from '../components/Error';
 
 const dimensions = Dimensions.get('screen');
-const Home = () => {
+const Home = ({ navigation }) => {
     const [movieImagenes, setMovieImagenes] = useState();
     const [popularMovies, setPopularMovies] = useState();
     const [popularTv, setPopularTv] = useState();
@@ -25,31 +25,33 @@ const Home = () => {
     };
 
     useEffect(() => {
-        getData().then(([
-            upcomingMoviesData,
-            popularMoviesData,
-            popularTvData,
-            familyMoviesData,
-            documentaryMoviesData
-        ]) => {
-            const movieImagenesArray = [];
-            upcomingMoviesData.forEach(movie => {
-                movieImagenesArray.push(`https://image.tmdb.org/t/p/w500` + movie.poster_path);
-            });
-            setMovieImagenes(movieImagenesArray);
-            setPopularMovies(popularMoviesData);
-            setPopularTv(popularTvData);
-            setFamilyMovies(familyMoviesData);
-            setDocumentaryMovies(documentaryMoviesData);
-        }).catch(() => {
-            setError(true);
-        }).finally(() => {
-            setLoading(true);
-        })
+        getData()
+            .then(
+                ([
+                    upcomingMoviesData,
+                    popularMoviesData,
+                    popularTvData,
+                    familyMoviesData,
+                    documentaryMoviesData
+                ]) => {
+                    const movieImagenesArray = [];
+                    upcomingMoviesData.forEach(movie => {
+                        movieImagenesArray.push(`https://image.tmdb.org/t/p/w500` + movie.poster_path);
+                    });
+                    setMovieImagenes(movieImagenesArray);
+                    setPopularMovies(popularMoviesData);
+                    setPopularTv(popularTvData);
+                    setFamilyMovies(familyMoviesData);
+                    setDocumentaryMovies(documentaryMoviesData);
+                }).catch(() => {
+                    setError(true);
+                }).finally(() => {
+                    setLoading(true);
+                })
     }, [])
     return (
         <>
-            {loading && (
+            {loading && !error && (
                 <ScrollView>
                     {
                         movieImagenes && (
@@ -66,6 +68,7 @@ const Home = () => {
                         popularMovies && (
                             <View style={styles.carousel}>
                                 <List
+                                    navigation={navigation}
                                     title={"Peliculas populares"}
                                     content={popularMovies}
                                 />
@@ -76,6 +79,7 @@ const Home = () => {
                         popularMovies && (
                             <View style={styles.carousel}>
                                 <List
+                                    navigation={navigation}
                                     title={"Series populares tv"}
                                     content={popularTv}
                                 />
@@ -86,6 +90,7 @@ const Home = () => {
                         familyMovies && (
                             <View style={styles.carousel}>
                                 <List
+                                    navigation={navigation}
                                     title={"Series Familiares"}
                                     content={familyMovies}
                                 />
@@ -96,6 +101,7 @@ const Home = () => {
                         documentaryMovies && (
                             <View style={styles.carousel}>
                                 <List
+                                    navigation={navigation}
                                     title={"Documentales"}
                                     content={documentaryMovies}
                                 />

@@ -4,14 +4,14 @@ import Card from "./Card";
 import PropTypes from "prop-types"
 
 const propTypes = {
-    title: PropTypes.object,
-    content: PropTypes.object,
+    title: PropTypes.string,
+    content: PropTypes.array,
 }
 
 class List extends React.PureComponent {
 
     render() {
-        const { title, content } = this.props
+        const { navigation, title, content } = this.props
         return (
             <View style={styles.containerList}>
                 <View>
@@ -25,6 +25,7 @@ class List extends React.PureComponent {
                         horizontal={true}
                         renderItem={({ item }) =>
                             <Card
+                                navigation={navigation}
                                 item={item}
                             />
                         }

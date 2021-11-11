@@ -7,6 +7,13 @@ const propTypes = {
     errorText2: PropTypes.string,
 }
 
+const defaultProps = {
+    errorText: "Huy! Algo salió mal.",
+    errorText2: "Asegúrate de estar en línea y restaurar la aplicación"
+}
+
+
+
 class Error extends React.PureComponent {
     render() {
         const { errorText, errorText2 } = this.props;
@@ -24,6 +31,7 @@ class Error extends React.PureComponent {
 }
 
 Error.propTypes = propTypes;
+Error.defaultProps = defaultProps;
 
 export default Error;
 
