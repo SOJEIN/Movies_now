@@ -32,3 +32,9 @@ export const getDocumentaryMovies = async () => {
     const resp = await axios.get(`${apiUrl}discover/movie?${api_key}&with_genres=99`);
     return resp.data.results;
 };
+
+// Get Movie
+export const getMovie = async (id) => {
+    const resp = await axios.get(`${apiUrl}/movie/${id}?${api_key}`);
+    return resp.data;
+};
