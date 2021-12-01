@@ -24,6 +24,8 @@ const Home = ({ navigation }) => {
         ])
     };
 
+    console.log("api", popularMovies)
+
     useEffect(() => {
         getData()
             .then(
@@ -76,7 +78,7 @@ const Home = ({ navigation }) => {
                         )
                     }
                     {
-                        popularMovies && (
+                        popularTv && (
                             <View style={styles.carousel}>
                                 <List
                                     navigation={navigation}

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiUrl = "https://api.themoviedb.org/3/";
-const api_key = "api_key=caf3722c95f7ef6a3aa4080593af8e0e&language=en-US&page=1"
+const api_key = "api_key=caf3722c95f7ef6a3aa4080593af8e0e&language=es"
 
 /* Api Get Populater Movie */
 export const getPopularMovies = async () => {
@@ -23,7 +23,7 @@ export const getPopularTv = async () => {
 
 /* Api Get Family Movie */
 export const getFamilyMovies = async () => {
-    const resp = await axios.get(`${apiUrl}discover/movie?${api_key}&with_genres=10751`);
+    const resp = await axios.get(`${apiUrl}discover/movie?${api_key}`);
     return resp.data.results;
 }
 
